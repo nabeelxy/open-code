@@ -1,6 +1,7 @@
 # open-code
 <img width="1685" height="938" alt="toy-scraper-open-code" src="https://github.com/user-attachments/assets/a5ab8c6f-53f6-4fcc-a52b-8786546efe20" />
-Figure: A toy scraper example built with gemini-2.5-pro on auto-mode (no manual fatigue of authorizing read/write)  
+Figure: A toy scraper example built with gemini-2.5-pro on auto-mode (no manual fatigue of authorizing read/write).  
+
 
 A lightweight, vendor-agnostic coding agent for your terminal. Supports Claude, Gemini (including Vertex AI), GPT-4, Groq, Ollama, and any OpenAI-compatible API.
 

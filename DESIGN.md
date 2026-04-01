@@ -2,7 +2,7 @@
 
 ## 1. Why This Exists
 
-Claude Code (`src/`) is ~512k lines of production TypeScript built exclusively around the Anthropic SDK. It bundles React/Ink for terminal rendering, GrowthBook for feature flags, LSP integration, MCP protocol, multi-agent orchestration, voice input, OAuth, MDM policy, and dozens of other enterprise features.
+Claude Code is ~512k lines of production TypeScript built exclusively around the Anthropic SDK. It bundles React/Ink for terminal rendering, GrowthBook for feature flags, LSP integration, MCP protocol, multi-agent orchestration, voice input, OAuth, MDM policy, and dozens of other enterprise features.
 
 **lite-agent** extracts the essential 5% — the agentic coding loop — and rebuilds it to be:
 

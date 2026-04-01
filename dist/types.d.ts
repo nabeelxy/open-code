@@ -55,7 +55,7 @@ export interface ToolDefinition {
 }
 export interface ToolContext {
     workingDir: string;
-    permissionMode: 'ask' | 'auto';
+    permissionMode: 'ask' | 'auto' | 'permissive';
     confirm(prompt: string): Promise<boolean>;
 }
 export interface ToolResult {
@@ -73,6 +73,6 @@ export interface Config {
     apiKey?: string;
     baseUrl?: string;
     maxTokens?: number;
-    permissionMode?: 'ask' | 'auto';
+    permissionMode?: 'ask' | 'auto' | 'permissive';
     systemPromptExtra?: string;
 }

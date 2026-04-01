@@ -51,7 +51,9 @@ export async function loadConfig(configPath) {
         process.env['TOGETHER_API_KEY'];
     const permissionMode = process.env['LITE_AUTO'] === 'true'
         ? 'auto'
-        : (fileConfig.permissionMode ?? 'ask');
+        : process.env['LITE_AUTO_MODE'] === 'true'
+            ? 'permissive'
+            : (fileConfig.permissionMode ?? 'ask');
     return {
         provider,
         model: process.env['LITE_MODEL'] ?? fileConfig.model ?? defaults.model ?? 'claude-opus-4-6',

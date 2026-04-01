@@ -18,7 +18,8 @@ program
     .option('-m, --model <name>', 'Model to use')
     .option('-k, --api-key <key>', 'API key')
     .option('--base-url <url>', 'Base URL for OpenAI-compatible providers')
-    .option('--auto', 'Auto-approve all tool calls (no confirmation prompts)')
+    .option('--auto', 'Auto-approve all tool calls including destructive commands (no prompts)')
+    .option('--auto-mode', 'Auto-approve file reads/writes; still prompt for destructive shell commands')
     .option('-c, --config <path>', 'Path to config file')
     .option('--save-config', 'Save current flags to ~/.lite-agent/config.json and exit')
     .argument('[prompt...]', 'Run a single prompt non-interactively and exit');
@@ -39,6 +40,8 @@ async function main() {
         config.baseUrl = opts.baseUrl;
     if (opts.auto)
         config.permissionMode = 'auto';
+    if (opts.autoMode)
+        config.permissionMode = 'permissive';
     // --save-config: write current merged config and exit
     if (opts.saveConfig) {
         await saveConfig(config);
@@ -157,7 +160,11 @@ function printHeader(config) {
         chalk.dim(` v${VERSION}`) +
         '  ' +
         chalk.dim(`${config.provider} / ${config.model}`) +
-        (config.permissionMode === 'auto' ? '  ' + chalk.yellow('[auto]') : ''));
+        (config.permissionMode === 'auto'
+            ? '  ' + chalk.yellow('[auto]')
+            : config.permissionMode === 'permissive'
+                ? '  ' + chalk.yellow('[auto-mode]')
+                : ''));
     console.log(chalk.dim(`cwd: ${process.cwd()}`));
     console.log();
 }

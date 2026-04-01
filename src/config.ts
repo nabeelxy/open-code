@@ -57,9 +57,11 @@ export async function loadConfig(configPath?: string): Promise<Config> {
     process.env['MISTRAL_API_KEY'] ??
     process.env['TOGETHER_API_KEY']
 
-  const permissionMode: 'ask' | 'auto' =
+  const permissionMode: 'ask' | 'auto' | 'permissive' =
     process.env['LITE_AUTO'] === 'true'
       ? 'auto'
+      : process.env['LITE_AUTO_MODE'] === 'true'
+      ? 'permissive'
       : (fileConfig.permissionMode ?? 'ask')
 
   return {

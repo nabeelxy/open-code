@@ -1,13 +1,13 @@
-# lite-agent — Design Document
+# open-code — Design Document
 
 ## 1. Why This Exists
 
 Claude Code is ~512k lines of production TypeScript built exclusively around the Anthropic SDK. It bundles React/Ink for terminal rendering, GrowthBook for feature flags, LSP integration, MCP protocol, multi-agent orchestration, voice input, OAuth, MDM policy, and dozens of other enterprise features.
 
-**lite-agent** extracts the essential 5% — the agentic coding loop — and rebuilds it to be:
+**open-code** extracts the essential 5% — the agentic coding loop — and rebuilds it to be:
 
 - **Vendor-agnostic**: Claude, Gemini, GPT-4, Groq, Ollama, or any OpenAI-compatible endpoint
-- **~1,400 lines**: vs. 512,000 in the original
+- **~1,600 lines**: vs. 512,000 in the original
 - **Zero build tooling required**: `npx tsx src/index.ts` works out of the box
 - **Fully functional**: reads/writes/edits files, runs shell commands, searches codebases
 
@@ -228,7 +228,7 @@ Priority order (highest to lowest):
 1. CLI flags (`--provider`, `--model`, `--api-key`)
 2. Environment variables (`LITE_PROVIDER`, `LITE_MODEL`, `LITE_API_KEY`, etc.)
 3. Provider-specific env vars (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`)
-4. Config file at `~/.lite-agent/config.json`
+4. Config file at `~/.open-code/config.json`
 5. Provider defaults (model names, base URLs)
 
 ### Config File Example
@@ -329,9 +329,9 @@ export function getAllTools(): Tool[] {
 
 ## 11. Comparison With Claude Code
 
-| Aspect | Claude Code (src/) | lite-agent |
+| Aspect | Claude Code (src/) | open-code |
 |---|---|---|
-| Lines of code | ~512,000 | ~1,400 |
+| Lines of code | ~512,000 | ~1,600 |
 | Dependencies | 50+ | 4 runtime |
 | UI framework | React + Ink | Plain stdout / readline |
 | LLM providers | Anthropic only | Anthropic + any OpenAI-compatible |
@@ -348,4 +348,4 @@ export function getAllTools(): Tool[] {
 | Startup time | Optimized parallel prefetch | Instant |
 | Config | MDM + Keychain + JSON | Env vars + JSON file |
 
-The lite-agent deliberately chooses simplicity over completeness. The 6 core tools and multi-turn streaming loop cover ~90% of real coding agent use cases.
+The open-code deliberately chooses simplicity over completeness. The 6 core tools and multi-turn streaming loop cover ~90% of real coding agent use cases.

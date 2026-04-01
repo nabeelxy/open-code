@@ -23,7 +23,7 @@ const autoCtx = {
     confirm: async () => true,
 };
 before(async () => {
-    testDir = join(tmpdir(), `lite-agent-test-${Date.now()}`);
+    testDir = join(tmpdir(), `open-code-test-${Date.now()}`);
     await mkdir(testDir, { recursive: true });
     autoCtx.workingDir = testDir;
 });

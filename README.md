@@ -1,49 +1,58 @@
-# lite-agent
+# open-code
 
-A lightweight, vendor-agnostic coding agent for your terminal. Supports Claude, Gemini, GPT-4, Groq, Ollama, and any OpenAI-compatible API.
+A lightweight, vendor-agnostic coding agent for your terminal. Supports Claude, Gemini (including Vertex AI), GPT-4, Groq, Ollama, and any OpenAI-compatible API.
 
-~1,400 lines of TypeScript. No framework. No build system required.
+~1,600 lines of TypeScript (plus ~650 lines of tests). No framework. No build system required for development.
+
+---
+
+## Installation
+
+```bash
+git clone <repo>
+cd open-code
+npm install -g .   # builds TypeScript and links the 'open-code' binary globally
+```
+
+Then use from anywhere:
+
+```bash
+open-code
+open-code --provider gemini "refactor this file"
+```
+
+### Dev mode (no global install)
+
+```bash
+npm install
+npx tsx src/index.ts
+```
 
 ---
 
 ## Quick Start
 
 ```bash
-cd lite
-npm install
-
 # With Claude (Anthropic)
-ANTHROPIC_API_KEY=sk-ant-... npx tsx src/index.ts
+ANTHROPIC_API_KEY=sk-ant-... open-code
 
 # With Gemini
-GEMINI_API_KEY=AI... npx tsx src/index.ts --provider gemini
+GEMINI_API_KEY=AI... open-code --provider gemini
 
 # With GPT-4
-OPENAI_API_KEY=sk-... npx tsx src/index.ts --provider openai --model gpt-4o
+OPENAI_API_KEY=sk-... open-code --provider openai --model gpt-4o
 
 # With Groq (fast, free tier available)
-GROQ_API_KEY=gsk_... npx tsx src/index.ts --provider groq
+GROQ_API_KEY=gsk_... open-code --provider groq
+
+# With Vertex AI (uses gcloud Application Default Credentials)
+open-code --provider vertex --model gemini-2.5-pro
 
 # With Ollama (local, no API key needed)
-npx tsx src/index.ts --provider ollama --model qwen2.5-coder:7b
+open-code --provider ollama --model qwen2.5-coder:7b
 
 # Single prompt (non-interactive)
-ANTHROPIC_API_KEY=sk-... npx tsx src/index.ts "explain what this repo does"
-```
-
----
-
-## Installation (optional, for global use)
-
-```bash
-cd lite
-npm install
-npm run build
-npm link          # makes 'lite' available globally
-
-# Then use from anywhere:
-lite
-lite --provider gemini "refactor this file"
+ANTHROPIC_API_KEY=sk-ant-... open-code "explain what this repo does"
 ```
 
 ---
@@ -55,26 +64,41 @@ lite --provider gemini "refactor this file"
 | Anthropic Claude | `--provider anthropic` | `ANTHROPIC_API_KEY` | `claude-opus-4-6` |
 | OpenAI | `--provider openai` | `OPENAI_API_KEY` | `gpt-4o` |
 | Google Gemini | `--provider gemini` | `GEMINI_API_KEY` | `gemini-2.0-flash` |
+| Google Vertex AI | `--provider vertex` | *(gcloud ADC)* | `gemini-2.0-flash` |
 | Groq | `--provider groq` | `GROQ_API_KEY` | `llama-3.3-70b-versatile` |
 | Mistral | `--provider mistral` | `MISTRAL_API_KEY` | `mistral-large-latest` |
 | Together AI | `--provider together` | `TOGETHER_API_KEY` | `meta-llama/Llama-3-70b-chat-hf` |
 | Ollama (local) | `--provider ollama` | *(none needed)* | `qwen2.5-coder:7b` |
-| Any OpenAI-compat | `--provider custom --base-url URL` | `LITE_API_KEY` | *(set `--model`)* |
+| Any OpenAI-compat | `--base-url <URL>` | `LITE_API_KEY` | *(set `--model`)* |
+
+### Vertex AI setup
+
+Vertex AI uses [Application Default Credentials](https://cloud.google.com/docs/authentication/application-default-credentials) — no API key needed.
+
+```bash
+gcloud auth application-default login
+open-code --provider vertex --model gemini-2.5-pro
+
+# Or set project explicitly:
+VERTEX_PROJECT=my-project open-code --provider vertex
+VERTEX_LOCATION=us-east4 open-code --provider vertex   # default: us-central1
+```
 
 ---
 
 ## CLI Reference
 
 ```
-lite [options] [prompt...]
+open-code [options] [prompt...]
 
 Options:
-  -p, --provider <name>   LLM provider (anthropic, openai, gemini, groq, ollama, ...)
+  -p, --provider <name>   LLM provider (anthropic, openai, gemini, vertex, groq, ollama, ...)
   -m, --model <name>      Model to use
   -k, --api-key <key>     API key (overrides env vars)
   --base-url <url>        Base URL for OpenAI-compatible endpoints
-  --auto                  Auto-approve all tool calls (no prompts)
-  -c, --config <path>     Path to config file (default: ~/.lite-agent/config.json)
+  --auto                  Auto-approve all tool calls including destructive commands (no prompts)
+  --auto-mode             Auto-approve file reads/writes; still prompt for destructive shell commands
+  -c, --config <path>     Path to config file (default: ~/.open-code/config.json)
   --save-config           Save current flags to config file and exit
   -V, --version           Print version
   -h, --help              Show help
@@ -84,26 +108,29 @@ Options:
 
 ```bash
 # Interactive REPL
-lite
+open-code
 
 # Single-shot with a specific model
-lite -p anthropic -m claude-haiku-4-5-20251001 "what files are in src/?"
+open-code -p anthropic -m claude-haiku-4-5-20251001 "what files are in src/?"
+
+# Auto-approve file reads/writes (bash destructive commands still prompt)
+open-code --auto-mode "update all import paths"
 
 # Skip all confirmation prompts (useful for scripting)
-lite --auto "add a README to this project"
+open-code --auto "add a README to this project"
 
 # Custom OpenAI-compatible endpoint (e.g. LM Studio)
-lite --provider local --base-url http://localhost:1234/v1 --model your-model
+open-code --base-url http://localhost:1234/v1 --model your-model
 
 # Save provider preference so you don't have to type it every time
-lite --provider gemini --model gemini-2.0-flash --save-config
+open-code --provider gemini --model gemini-2.0-flash --save-config
 ```
 
 ---
 
 ## Configuration File
 
-Stored at `~/.lite-agent/config.json`. Create manually or use `--save-config`.
+Stored at `~/.open-code/config.json`. Create manually or use `--save-config`.
 
 ```json
 {
@@ -118,7 +145,7 @@ Stored at `~/.lite-agent/config.json`. Create manually or use `--save-config`.
 1. CLI flags (`--provider`, `--model`, etc.)
 2. `LITE_*` environment variables
 3. Provider-specific env vars (`ANTHROPIC_API_KEY`, etc.)
-4. `~/.lite-agent/config.json`
+4. `~/.open-code/config.json`
 5. Built-in defaults
 
 ---
@@ -133,13 +160,12 @@ While in the interactive REPL:
 | `/history` | Show how many messages are in context |
 | `/help` | Show available commands |
 | `/exit` or `/quit` | Exit |
+| `exit`, `quit`, `q`, `bye` | Exit (bare words also work) |
 | `Ctrl+C` | Exit |
 
 ---
 
 ## Available Tools
-
-The agent can use these tools to complete tasks:
 
 | Tool | What it does |
 |---|---|
@@ -158,14 +184,19 @@ The agent can use these tools to complete tasks:
 - Destructive shell commands (`rm -rf`, `dd if=`, etc.)
 - File writes and edits
 
+**`auto-mode`**: Auto-approves file reads/writes; still prompts for destructive shell commands.
+```bash
+open-code --auto-mode "update all import paths to use absolute paths"
+```
+
 **`auto`**: Never prompts. Use for scripting or when you trust the task fully.
 ```bash
-lite --auto "refactor all imports to use absolute paths"
+open-code --auto "refactor all imports to use absolute paths"
 ```
 
 Set permanently in config:
 ```json
-{ "permissionMode": "auto" }
+{ "permissionMode": "auto-mode" }
 ```
 
 ---
@@ -178,12 +209,16 @@ Set permanently in config:
 | `LITE_MODEL` | Model name (overrides config) |
 | `LITE_API_KEY` | API key for any provider |
 | `LITE_BASE_URL` | Custom base URL |
-| `LITE_AUTO` | Set to `true` for auto-approve mode |
+| `LITE_AUTO` | Set to `true` for full auto-approve mode |
+| `LITE_AUTO_MODE` | Set to `true` for auto-approve file ops only |
+| `VERTEX_PROJECT` | GCP project ID for Vertex AI |
+| `VERTEX_LOCATION` | GCP region for Vertex AI (default: `us-central1`) |
 | `ANTHROPIC_API_KEY` | Anthropic API key |
 | `OPENAI_API_KEY` | OpenAI API key |
 | `GEMINI_API_KEY` | Google Gemini API key |
 | `GROQ_API_KEY` | Groq API key |
 | `MISTRAL_API_KEY` | Mistral API key |
+| `TOGETHER_API_KEY` | Together AI API key |
 
 ---
 
@@ -265,7 +300,7 @@ case 'yourprovider':
 3. Use it:
 
 ```bash
-lite --provider yourprovider --model your-model-name
+open-code --provider yourprovider --model your-model-name
 ```
 
 ---
@@ -320,8 +355,9 @@ src/
 ├── config.ts         Config file + env var loading
 ├── context.ts        System context (git status, cwd, OS)
 ├── providers/
-│   ├── anthropic.ts  Anthropic/Claude (streaming tool calls)
-│   ├── openai.ts     OpenAI-compatible (covers Gemini, Groq, Ollama, ...)
+│   ├── anthropic.ts  Anthropic/Claude (native SDK, streaming tool calls)
+│   ├── openai.ts     OpenAI-compatible (Gemini, Groq, Ollama, Mistral, ...)
+│   ├── vertex.ts     Google Vertex AI (native @google/genai SDK, ADC auth)
 │   └── index.ts      Provider factory
 └── tools/
     ├── bash.ts       Shell execution

@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
-const CONFIG_DIR = join(homedir(), '.lite-agent');
+const CONFIG_DIR = join(homedir(), '.open-code');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 // Default model and base URL per provider
 const PROVIDER_DEFAULTS = {

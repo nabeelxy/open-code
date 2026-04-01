@@ -11,7 +11,7 @@ const VERSION = '0.1.0';
 // ─── CLI setup ────────────────────────────────────────────────────────────────
 const program = new Command();
 program
-    .name('lite')
+    .name('open-code')
     .description('Lightweight vendor-agnostic coding agent')
     .version(VERSION)
     .option('-p, --provider <name>', 'LLM provider (anthropic, openai, gemini, groq, ollama, ...)')
@@ -21,7 +21,7 @@ program
     .option('--auto', 'Auto-approve all tool calls including destructive commands (no prompts)')
     .option('--auto-mode', 'Auto-approve file reads/writes; still prompt for destructive shell commands')
     .option('-c, --config <path>', 'Path to config file')
-    .option('--save-config', 'Save current flags to ~/.lite-agent/config.json and exit')
+    .option('--save-config', 'Save current flags to ~/.open-code/config.json and exit')
     .argument('[prompt...]', 'Run a single prompt non-interactively and exit');
 program.parse();
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -45,7 +45,7 @@ async function main() {
     // --save-config: write current merged config and exit
     if (opts.saveConfig) {
         await saveConfig(config);
-        console.log(chalk.green(`Config saved to ~/.lite-agent/config.json`));
+        console.log(chalk.green(`Config saved to ~/.open-code/config.json`));
         process.exit(0);
     }
     // Validate we have an API key where needed
@@ -156,7 +156,7 @@ async function main() {
 }
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function printHeader(config) {
-    console.log(chalk.bold.blue('lite-agent') +
+    console.log(chalk.bold.blue('open-code') +
         chalk.dim(` v${VERSION}`) +
         '  ' +
         chalk.dim(`${config.provider} / ${config.model}`) +

@@ -3,7 +3,7 @@ import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 import type { Config } from './types.js'
 
-const CONFIG_DIR = join(homedir(), '.lite-agent')
+const CONFIG_DIR = join(homedir(), '.open-code')
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json')
 
 // Default model and base URL per provider

@@ -1,0 +1,35 @@
+{
+  "name": "lite-agent",
+  "version": "0.1.0",
+  "description": "Lightweight vendor-agnostic coding agent — Claude, Gemini, GPT-4, Groq, Ollama",
+  "type": "module",
+  "bin": {
+    "lite": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "dev:watch": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "npx tsx --test src/tests/tools.test.ts src/tests/agent.test.ts src/tests/providers.test.ts",
+    "test:watch": "npx tsx --test --watch src/tests/*.test.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.54.0",
+    "@google-cloud/vertexai": "^1.10.4",
+    "@google/genai": "^1.47.0",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "glob": "^11.0.1",
+    "openai": "^4.97.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

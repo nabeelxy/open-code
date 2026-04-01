@@ -21,7 +21,7 @@ Then use from anywhere:
 
 ```bash
 open-code
-open-code --provider gemini "refactor this file"
+open-code --provider vertex --model gemini-2.5-pro "refactor this file"
 ```
 
 ### Dev mode (no global install)

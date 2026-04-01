@@ -149,10 +149,16 @@ async function main() {
       return
     }
 
-    // Slash commands
+    // Slash commands and bare exit words
     if (input.startsWith('/')) {
       handleSlashCommand(input, messages, rl)
       return
+    }
+
+    const lower = input.toLowerCase()
+    if (lower === 'exit' || lower === 'quit' || lower === 'q' || lower === 'bye') {
+      console.log(chalk.dim('Goodbye!'))
+      process.exit(0)
     }
 
     rl.pause()
